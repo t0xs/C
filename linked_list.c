@@ -1,27 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-struct Node {
+typedef struct Node {
     int data;
     struct Node *next;
-};
+} Node;
 
-struct Node *createNode(int data) {
-    struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
-    newNode->data = data;
-    newNode->next = NULL;
+Node *createNode(int data) {
+    Node *newNode = (Node *)malloc(sizeof(Node));
+    if (newNode != NULL) {
+        newNode->data = data;
+        newNode->next = NULL;
+    }
     return newNode;
 }
 
-struct Node *insertAtBeginning(struct Node *head, int data) {
-    struct Node *newNode = createNode(data);
-    newNode->next = head;
-    return newNode;
+Node *insertAtBeginning(Node *head, int data) {
+    Node *newNode = createNode(data);
+    if (newNode != NULL) {
+        newNode->next = head;
+        return newNode;
+    } else {
+        return head;
+    }
 }
 
-void printList(struct Node *head) {
-    struct Node *current = head;
+void printList(const Node *head) {
+    const Node *current = head;
     while (current != NULL) {
         printf("%d -> ", current->data);
         current = current->next;
@@ -29,8 +34,16 @@ void printList(struct Node *head) {
     printf("NULL\n");
 }
 
+void freeList(Node *head) {
+    while (head != NULL) {
+        Node *temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
 int main() {
-    struct Node *head = NULL;
+    Node *head = NULL;
 
     head = insertAtBeginning(head, 3);
     head = insertAtBeginning(head, 2);
@@ -39,11 +52,7 @@ int main() {
     printf("Lista encadeada: ");
     printList(head);
 
-    while (head != NULL) {
-        struct Node *temp = head;
-        head = head->next;
-        free(temp);
-    }
+    freeList(head);
 
     return 0;
 }
